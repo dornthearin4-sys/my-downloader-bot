@@ -6,9 +6,12 @@ import time
 API_TOKEN = '8511913164:AAEF_nik_mx5q99FXw-ARdyu5Ht6SJ29Rco'
 bot = telebot.TeleBot(API_TOKEN)
 
-# លុបការភ្ជាប់ចាស់ចោលដើម្បីការពារ Error 409
-bot.remove_webhook()
-time.sleep(1)
+# បញ្ជាឱ្យលុបការភ្ជាប់ចាស់ចោលភ្លាមៗដើម្បីការពារ Error 409
+try:
+    bot.remove_webhook()
+    time.sleep(1)
+except:
+    pass
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -24,7 +27,7 @@ def handle_download(message):
     msg = bot.reply_to(message, "កំពុងទាញយក... សូមរង់ចាំ!")
 
     try:
-        # API សម្រាប់ទាញយកវីដេអូ
+        # ប្រើប្រាស់ API រួមដើម្បីទាញយកគ្រប់ App
         api_url = f"https://api.vkrhost.info/api/download?url={url}"
         response = requests.get(api_url).json()
 
@@ -33,7 +36,7 @@ def handle_download(message):
             bot.send_video(message.chat.id, video_url, caption="ទាញយកដោយជោគជ័យ!")
             bot.delete_message(message.chat.id, msg.message_id)
         else:
-            bot.edit_message_text("រកមិនឃើញវីដេអូទេ ឬ Link ខុស។", message.chat.id, msg.message_id)
+            bot.edit_message_text("រកមិនឃើញវីដេអូទេ ឬ Link មិនត្រឹមត្រូវ។", message.chat.id, msg.message_id)
     except Exception as e:
         bot.edit_message_text(f"បញ្ហា៖ {str(e)}", message.chat.id, msg.message_id)
 
