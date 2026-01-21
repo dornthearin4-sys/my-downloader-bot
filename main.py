@@ -2,14 +2,14 @@ import telebot
 import requests
 import time
 
-# លេខ Token របស់បង (បងអាចប្រើលេខចាស់ ឬ Revoke យកលេខថ្មីកាន់តែល្អ)
-API_TOKEN = '8511913164:AAEF_nik_mx5q99FXw-ARdyu5Ht6SJ29Rco'
+# លេខ Token ថ្មីរបស់បងដែលទើប Revoke មិញ
+API_TOKEN = '8511913164:AAEYjaIjnSoE_NGd2pSx_6-6fKl6AvbSg3c'
 bot = telebot.TeleBot(API_TOKEN)
 
-# ការពារការជាន់គ្នា
+# ផ្ដាច់រាល់ការភ្ជាប់ចាស់ៗដែលធ្លាប់មាន
 try:
     bot.remove_webhook()
-    time.sleep(1)
+    time.sleep(2)
 except:
     pass
 
@@ -26,13 +26,12 @@ def handle_download(message):
 
     msg = bot.reply_to(message, "កំពុងទាញយក... សូមរង់ចាំ!")
     try:
-        # API ពិសេសដែល Support គ្រប់ App
+        # API សម្រាប់ទាញយកវីដេអូគ្រប់ App
         api_url = f"https://api.vkrhost.info/api/download?url={url}"
         response = requests.get(api_url).json()
-        
         if response.get("status"):
             video_url = response["data"]["url"]
-            bot.send_video(message.chat.id, video_url, caption="ទាញយកជោគជ័យដោយ Thearin!")
+            bot.send_video(message.chat.id, video_url, caption="ទាញយកជោគជ័យ!")
             bot.delete_message(message.chat.id, msg.message_id)
         else:
             bot.edit_message_text("រកមិនឃើញវីដេអូទេ ឬ Link ខុស។", message.chat.id, msg.message_id)
