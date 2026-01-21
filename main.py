@@ -2,9 +2,16 @@ import telebot
 import requests
 import time
 
-# លេខ Token ថ្មីបំផុតរបស់បង
+# លេខ Token ថ្មីបំផុតរបស់បង (រូបភាពទី ៣៥)
 API_TOKEN = '8511913164:AAEYjaIjnSoE_NGd2pSx_6-6fKl6AvbSg3c'
 bot = telebot.TeleBot(API_TOKEN)
+
+# ផ្ដាច់រាល់ការភ្ជាប់ចាស់ៗទាំងអស់ ដើម្បីកម្ចាត់ Error 409 Conflict
+try:
+    bot.remove_webhook()
+    time.sleep(2)
+except:
+    pass
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -20,7 +27,7 @@ def handle_download(message):
     msg = bot.reply_to(message, "⏳ កំពុងទាញយក... សូមរង់ចាំបន្តិច!")
 
     try:
-        # ប្រើប្រាស់ API ទី១
+        # ប្រើប្រាស់ API ទី១ (Support គ្រប់ App)
         api_url = f"https://api.vkrhost.info/api/download?url={url}"
         response = requests.get(api_url).json()
 
@@ -39,6 +46,7 @@ def handle_download(message):
             else:
                 bot.edit_message_text("❌ រកមិនឃើញវីដេអូក្នុង Link នេះទេ ឬវាជាវីដេអូ Private។", message.chat.id, msg.message_id)
     except Exception as e:
-        bot.edit_message_text("⚠️ បច្ចុប្បន្ន Server កំពុងមមាញឹកខ្លាំង សូមសាកល្បងម្ដងទៀតនៅបន្តិចទៀតនេះ។", message.chat.id, msg.message_id)
+        bot.edit_message_text("⚠️ Server កំពុងមមាញឹក សូមសាកល្បងម្ដងទៀតនៅបន្តិចទៀតនេះ។", message.chat.id, msg.message_id)
 
+# កូដបញ្ជាឱ្យបតដំណើរការរហូត
 bot.infinity_polling(timeout=20, long_polling_timeout=10)
