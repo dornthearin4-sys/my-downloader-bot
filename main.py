@@ -13,7 +13,12 @@ def send_welcome(message):
 @bot.message_handler(func=lambda message: True)
 def download_video(message):
     url = message.text
-    bot.reply_to(message, "កំពុងទាញយក... សូមរង់ចាំ!")
+    # ឆែកមើលថាជា Link វីដេអូឬអត់
+    if not url.startswith('http'):
+        bot.reply_to(message, "សូមផ្ញើ Link វីដេអូដែលត្រឹមត្រូវ (ឧទាហរណ៍៖ YouTube, FB, TikTok)។")
+        return
+
+    bot.reply_to(message, "កំពុងទាញយក... សូមរង់ចាំបន្តិច!")
     
     try:
         # ការកំណត់សម្រាប់ទាញយកវីដេអូ
@@ -26,14 +31,15 @@ def download_video(message):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
             
-        # ផ្ញើវីដេអូទៅកាន់ Telegram របស់បង
+        # ផ្ញើវីដេអូទៅកាន់ Telegram
         with open('video.mp4', 'rb') as video:
             bot.send_video(message.chat.id, video)
             
-        # លុប File ចេញក្រោយផ្ញើរួចដើម្បីសន្សំទំហំផ្ទុក
+        # លុប File ចេញក្រោយផ្ញើរួចដើម្បីសន្សំទំហំផ្ទុក Server
         os.remove('video.mp4')
         
     except Exception as e:
         bot.reply_to(message, f"មានបញ្ហា៖ {str(e)}")
 
-bot.polling()
+# កែសម្រួលត្រង់ចំណុចនេះ ដើម្បីកុំឱ្យបតគាំង ឬ Conflict
+bot.infinity_polling(timeout=10, long_polling_timeout=5)
